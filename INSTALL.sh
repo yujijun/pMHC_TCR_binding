@@ -1,10 +1,7 @@
 #!/bin/bash
 #######################################
-# Modeller								  #
-# 2019-4-18 by LY					  #
-#######################################
-
-#将所需参数文件或脚本的路径加入环境变量
+# Modeller
+# Add the path of the required parameter file or script to the environment variable
 SOFTWARE_DIR=$PWD
 echo "#################### Modeller ########################" >> ~/.bashrc
 echo "export PATH=\$PATH:$SOFTWARE_DIR/scripts" >> ~/.bashrc
