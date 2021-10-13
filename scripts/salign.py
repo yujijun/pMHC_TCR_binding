@@ -1,5 +1,7 @@
+#!/usr/bin/python3
 from modeller import *
 import sys, getopt
+import os
 
 if __name__ == "__main__":
 	# process command arguments
@@ -36,7 +38,10 @@ if __name__ == "__main__":
 
 	template_name = template_pdb.split(".")[-2]
 	template_name = template_name.split("/")[-1]
-	file_path = "/".join(template_pdb.split("/")[0:-1])
+	file_path = '.'
+	if len(template_pdb.split("/")) > 1:
+		file_path = '/'.join(template_pdb.split("/")[0:-1])
+		
 	print(template_name)
 	mdl = model(env, file=template_pdb, model_segment=('FIRST:'+chain_id_first,'LAST:'+chain_id_last))
 	if chain_id_first == chain_id_last:

@@ -1,43 +1,81 @@
-DRA-DRB-modeller-v2 说明文档：
+# MHC-peptide-TCR modelling
 
-contact: cy_scu@yeah.net
-2020
+## 使用说明
 
-用途：使用modeller同源建模工具构建MHC分子（以及结合肽）的三维结构
-用法：
-	1. 准备模板库
-		1) "Template_MHCI"和"Template_MHCII"文件夹里的"structure"文件夹中为收集的对应型别的MHC分子的晶体结构，每个晶体结构中均结合有抗原多肽。
-		注意："structure"文件夹名称在脚本中被直接使用，不要随意更改
+```
+Usage: Pipeline_modeller_update2021.pl -c <mhc class>
+                                -a <mhc alpha chain>
+                                -b <mhc beta chain>
+                                -p <peptide>
+                                [-A] <tcr alpha chain>
+                                [-B] <tcr beta chain>
+                                -u <userDir>
+                                -n <model number>
+DESCRIPTION：
+      -c  the input MHC class type must be "MHC-I" or "MHC-II"!
+      -a  input the sequence file (.fasta) or the allele name (eg:HLA-A*01:01, HLA-DPA1*01:03) of mhc alpha chain.
+      -b  input the sequence file (.fasta) or the allele name (eg:b2m, HLA-DPB1*01:01) of mhc beta chain.
+      -p   input the sequence file (.fasta) of peptide.
+      [-A]  input the sequence file (.fasta) of tcr alpha chain.
+      [-B]  input the sequence file (.fasta) of tcr beta chain.
+      -u   input the output direction.
+      -n   input the output model number.
+```
 
-		2) 运行脚本 "ExtractSeq_fromMHCIIComplex-allSeqs.pl structure" 提取出结构文件中的序列信息，存放在"sequence"文件夹中。
-		注意："sequence"文件夹名称在脚本中被直接使用，不要随意更改
 
-	2. 准确目标序列文件
-		1) 参考example_sequence.fasta文件中的序列格式
 
-	3. 执行基于modeller的同源建模
-		1) 运行脚本，例如："./Pipeline_modeller-improve.pl Template_MHCI example_sequence.fasta test 5"
-			参数说明： 
-				Template_MHCI 为模板（包括结构和序列）所在的文件夹；
-				example_sequence.fasta 为需要用于建模的多肽链（输入格式为fasta）
-				test 为输出结果存放的自定义文件夹，位于model_build文件夹中。
-				5 为构建的模型数目
-		
-		2) 执行流程：
-			读入目标序列文件（fasta格式）
-				|
-			分别将每一个目标序列文件转换为pir格式（输出对应的.ali文件）
-				|
-			将目标序列与模板库的模板序列进行比对（NWalign），输出比对打分矩阵（matrix.txt文件）
-				|
-			使用Hungarian算法寻找目标序列与模板序列之间的最优匹配组合（matrix_assign.txt文件），并计算最优匹配组合的平均得分
-				|
-			根据平均得分对模板进行排序，选取得分最高的模板作为目标序列的同源建模模板
-				|
-			按照之前获得的目标序列与模板序列的一一对应关系，分别对对每一对序列进行序列比对（调用脚本"salign.py"）
-				|
-			将比对好的序列文件合并到一个 .ali 文件中
-				|
-			执行多条链的同源建模（调用脚本"model-multichain.py"）
++ 功能概述: 根据输入的MHC、peptide以及TCR的序列构建复合体结构模型，结构建模方法基于modeller 9.25。
 
-		3) 输出文件: 存放在"model_build"文件夹中。
++ 输入项描述：
+
+  -c: 输入的MHC序列所属类型, 包括MHC class I和MHC class II两类可选，输入值必须为<code>MHC-I</code>或 <code>MHC-II</code>；
+
+  -a: MHC分子的alpha chain sequence，可以是包含序列信息的fasta文件，也可以是alpha chain的等位基因名称，输入的基因名称格式如 <code>HLA-A\*01:01, HLA-DPA1\*01:03</code>。程序目前可识别的基因名称见下述两个文件：
+
+  ​	① <code>./program/getTopAlleles/Top_MHCI_alleles.csv</code>文件中存放的为HLA class I每个基因座上的Top10等位基因，由<code>./program/getTopAlleles/getTopMHCIAlleles.py</code>生成。
+
+  ​	② <code>./program/getTopAlleles/Top_MHCII_alleles.csv</code>文件中存放的为HLA class II每个基因座上的Top10等位基因，由<code>./program/getTopAlleles/getTopMHCIIAlleles.py</code>生成。
+
+  ​	**说明：也可以将目前已知的所有等位基因都列举出来供选择**。
+
+  -b: MHC分子的beta chain sequence，可以是包含序列信息的fasta文件，也可以是beta chain的等位基因名称，输入的基因名称格式如 <code>b2m, HLA-DPB1*01:01</code>。程序目前可识别的基因名称见下	述两个文件：
+
+  ​    ① <code>./program/getTopAlleles/b2m.csv</code>文件中存放的为HLA class I中的Beta-2-microglobulin。
+
+  ​	② <code>./program/getTopAlleles/Top_MHCII_alleles.csv</code>文件中存放的为HLA class II每个基因座上的Top10等位基因，由<code>./program/getTopAlleles/getTopMHCIIAlleles.py</code>生成。
+
+  -p: 多肽的序列信息，输入为包含序列信息的fasta文件。
+
+  -A: 可选，TCR的alpha chain sequence，输入为包含序列信息的fasta文件。
+
+  -B: 可选，TCR的beta chain sequence，输入为包含序列信息的fasta文件。
+
+  -u: 用户自定义的输出文件夹。
+
+  -n: 输出多少个模型。
+
++ 待解决问题：
+
+  TCR目前还没有实现利用基因名称作为输入项。
+
++ 运行示例 (输出位于<code>model_build</code>文件夹中)：
+
+输入基因名称
+
+```shell
+./scripts/Pipeline_modeller_update2021.pl -c MHC-I -a HLA-A*01:01 -b b2m -p ./example/pep_example_sequence.fasta -u MHCI_test -n 1
+```
+
+
+
+```shell
+./scripts/Pipeline_modeller_update2021.pl -c MHC-II -a HLA-DRA*01:01 -b HLA-DRB1*01:01 -p ./example/pep_example_sequence.fasta -u MHCII_test -n 1
+```
+输入序列文件
+```shell
+./scripts/Pipeline_modeller_update2021.pl -c MHC-I -a ./example/mhcα_example_sequence.fasta -b ./example/mhcβ_example_sequence.fasta -p ./example/pep_example_sequence.fasta -u MHCI_test_1 -n 1
+```
+添加TCR序列
+```shell
+./scripts/Pipeline_modeller_update2021.pl -c MHC-I -a ./example/mhcα_example_sequence.fasta -b ./example/mhcβ_example_sequence.fasta -p ./example/pep_example_sequence.fasta -A ./example/tcrα_example_sequence.fasta -B ./example/tcrβ_example_sequence.fasta -u MHCI_test_2 -n 1
+```

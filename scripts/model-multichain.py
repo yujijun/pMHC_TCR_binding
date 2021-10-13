@@ -1,3 +1,4 @@
+#!/usr/bin/python3
 # Comparative modeling by the automodel class
 #
 # Demonstrates how to build multi-chain models
@@ -11,7 +12,7 @@ log.verbose()
 class MyModel(automodel):
     def special_patches(self, aln):
         # Rename both chains and renumber the residues in each
-        self.rename_segments(segment_ids=['A', 'B', 'C', 'D', 'E'],
+        self.rename_segments(segment_ids=['C', 'D', 'E', 'F', 'G'],
                              renumber_residues=[1, 1, 1, 1, 1])
         # Another way to label individual chains:
         # self.chains[0].name = 'A'
@@ -30,7 +31,7 @@ model_num = input_argvs.split()[1]
 read_aln = modfile.File(aln_file, 'r')
 while aln.read_one(read_aln, alignment_format='PIR'):
 	code.append(aln[0].code)
-	
+
 read_aln.close()
 template_code = code[0]
 target_code = code[1]
@@ -46,7 +47,8 @@ a = MyModel(env,
 			      )
 	    )                       
 
+
 a.starting_model= 1                # index of the first model
-a.ending_model  = int(model_num)                # index of the last model
+a.ending_model  = int(model_num)   # index of the last model
                                    # (determines how many models to calculate)
 a.make()                           # do comparative modeling
