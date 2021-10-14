@@ -55,4 +55,4 @@ DESCRIPTION：
 ```
 
 ## Evaluation about model
-!(plot)[./Evaluation/example_figure.png]
+![plot](https://github.com/yujijun/pMHC_TCR_binding/blob/master/Evaluation/example_figure.png)
