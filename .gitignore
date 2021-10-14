@@ -35,3 +35,4 @@ inc/
 /*.zip
 Template_MHCI/
 Template_MHCII/
+!.gitkeep

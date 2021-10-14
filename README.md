@@ -53,3 +53,6 @@ DESCRIPTION：
 ```shell
 ./scripts/Pipeline_modeller_update2021.pl -c MHC-I -a ./example/mhcα_example_sequence.fasta -b ./example/mhcβ_example_sequence.fasta -p ./example/pep_example_sequence.fasta -A ./example/tcrα_example_sequence.fasta -B ./example/tcrβ_example_sequence.fasta -u MHCI_test_2 -n 1
 ```
+
+## Evaluation about model
+!(plot)[./Evaluation/example_figure.png]
